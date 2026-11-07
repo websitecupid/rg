@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory of RG</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100vh;
+}
+
+body {
+    background-color: #fbf7ee;
+    overflow-x: hidden;
+}
+
+/* Header */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+header h1 {
+    font-size: 28px;
+    font-weight: 500;
+    color: #000000;
+    text-align: center;
+}
+
+/* Music Button */
+.music-control {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 9999;
+}
+
+.music-btn {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 22px;
+    border-radius: 30px;
+    background: #cfe8f8;
+    color: #000000;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+.music-btn:hover {
+    background: #b6def7;
+    transform: translateY(-3px);
+}
+
+/* Gallery */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    justify-content: center;
+}
+
+.gallery-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
+    background: #ffffff;
+    border: 3px solid #d4af7c;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transition: 0.35s ease;
+    display: flex;
+    flex-direction: column;
+    height: 320px;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    padding: 10px;
+    transition: transform 0.35s ease;
+}
+
+.card:has(img):hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 35px rgba(0,0,0,0.2);
+}
+
+.card img:hover {
+    transform: scale(1.03);
+}
+
+/* Download Button */
+.download {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 12px;
+    background: #cfe8f8;
+    color: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.download:hover {
+    background: #b6def7;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .gallery {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .gallery {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        height: 350px;
+    }
+
+    .music-control {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .music-btn {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+
+<body oncontextmenu="return false;">
+
+<!-- Header -->
+<header>
+    <h1>Your final voyage has begun, but your memories will forever sail in our hearts</h1>
+</header>
+
+<!-- Background Music -->
+<audio id="bgMusic" autoplay loop muted preload="auto">
+    <source src="music/RM.mp3" type="audio/mpeg">
+    Your browser does not support audio playback.
+</audio>
+
+<!-- Music Control -->
+<div class="music-control">
+    <button class="music-btn" id="musicBtn">
+        ▶ Play Music
+    </button>
+</div>
+
+<!-- Gallery -->
+<main class="container">
+    <div class="gallery" id="gallery"></div>
+</main>
+
+<script>
+
+// ====================================
+// BACKGROUND MUSIC AUTOPLAY
+// ====================================
+
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
+
+music.volume = 0.5;
+
+// Automatically attempt to play music
+async function startMusic() {
+    try {
+        await music.play();
+
+        // Attempt to enable sound
+        music.muted = false;
+
+        musicBtn.textContent = "❚❚ Pause Music";
+
+    } catch (error) {
+        console.log("Autoplay blocked. Waiting for user interaction.");
+
+        musicBtn.textContent = "▶ Play Music";
+    }
+}
+
+// Run when the page opens
+window.addEventListener("load", startMusic);
+
+// Play and Pause Button
+musicBtn.addEventListener("click", async () => {
+
+    if (music.paused) {
+
+        music.muted = false;
+
+        try {
+            await music.play();
+            musicBtn.textContent = "❚❚ Pause Music";
+
+        } catch (error) {
+            console.error("Audio playback failed:", error);
+        }
+
+    } else {
+
+        music.pause();
+        musicBtn.textContent = "▶ Play Music";
+    }
+
+});
+
+// Update button automatically
+music.addEventListener("play", () => {
+    musicBtn.textContent = "❚❚ Pause Music";
+});
+
+music.addEventListener("pause", () => {
+    musicBtn.textContent = "▶ Play Music";
+});
+
+
+// ====================================
+// PHOTO GALLERY
+// ====================================
+
+const gallery = document.getElementById("gallery");
+const totalPhotos = 7;
+
+// Download Image Function
+async function downloadImage(src, filename) {
+
+    try {
+
+        const response = await fetch(src);
+
+        if (!response.ok) {
+            throw new Error("Image not found");
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = filename;
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    } catch (error) {
+
+        console.error("Download failed:", error);
+
+        const link = document.createElement("a");
+
+        link.href = src;
+        link.download = filename;
+        link.target = "_blank";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    }
+}
+
+
+// Generate Photo Gallery
+Array.from({ length: totalPhotos }, (_, index) => {
+
+    const number = index + 1;
+
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+
+    item.innerHTML = `
+        <div class="card">
+            <img
+                src="img/p${number}.jpg"
+                alt="Photo ${number}"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='https://placehold.co/320x320/cfe8f8/000000?text=Photo+${number}'">
+        </div>
+
+        <button class="download">
+            Download
+        </button>
+    `;
+
+    item.querySelector(".download").addEventListener("click", () => {
+
+        downloadImage(
+            `img/p${number}.jpg`,
+            `p${number}.jpg`
+        );
+
+    });
+
+    gallery.appendChild(item);
+
+});
+
+</script>
+
+</body>
+</html>
+```
